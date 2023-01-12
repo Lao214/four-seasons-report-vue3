@@ -1,11 +1,13 @@
 <template>
   <!-- <v-touch v-on:swipeleft="swiperleft"  v-on:swiperight="swiperright" class="wrapper"> -->
     <div class="body" @touchstart="handleTouchStart" @touchend="hanldeTouchEnd">
-      <div class="sekuai2">
-      </div>
-      <div class="sekuai"> 
-      </div>
-      <div style="position:absolute;text-align:center;width:100%;bottom: 5%;font-size: 0.7em;">上滑屏幕继续</div>
+      <transition name="sekuai" appear>
+        <div class="sekuai2" v-show="page === 1" />
+      </transition>
+      <transition name="sekuai" appear>
+        <div class="sekuai"  v-show="page === 1" />
+      </transition>
+      <div style="position:absolute;text-align:center;width:100%;bottom: 5%;font-size: 0.7em;" v-show="page <= 2" >上滑屏幕继续</div>
       <!-- 第一页start -->
       <transition name="one" appear>
         <div class="one" v-show="page === 1">
@@ -34,9 +36,38 @@
       <!-- 第二页start -->
       <transition name="two" appear>
         <div class="two" v-show="page === 2">
+          <div class="twoneirong">
+            <div class="Carrot">
+              <transition name="sekuai" appear>
+                <div class="Carrot-header" v-show="page === 2">
+                  <div class="carrot-leaf1"></div>
+                  <div class="carrot-leaf2"></div>
+                  <div class="carrot-leaf3"></div>
+                </div>
+              </transition>
+              <transition name="laptop" appear>
+                <div class="Carrot-body"  v-show="page === 2">
+                  <div class="eyes-left"></div>
+                  <div class="eyes-right"></div>
+                  <div class="mouth"></div>
+                </div>
+              </transition>
+            </div>
+            <div class="carrot-text">
+              <p>niasd saasdasd asdasdasdasdas 撒打算大撒打算大时代阿斯顿</p>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!-- 第二页end -->
+
+      <!-- 第三页start -->
+      <transition name="three" appear>
+        <div class="three" v-show="page === 3">
           <div class="containers">
+          <!-- 电脑与键盘 -->  
             <transition name="screen" appear>
-              <div class="screen monitor" v-show="page === 2">
+              <div class="screen monitor" v-show="page === 3">
                 <div class="content">
                   <div class="pg">
                   </div>
@@ -50,38 +81,30 @@
                 </div>
               </div>
             </transition>
-        <!-- 笔记本电脑 -->
-        <transition name="laptop" appear>
-          <div class="laptop" v-show="page === 2">
-            <div class="content">
-            </div>
-            <div class="btm"></div>
-          </div>
-        </transition>
-        <!-- 笔记本电脑 -->
-        <!-- 手机 -->
-        <transition name="phone" appear>
-          <div class="phone" v-show="page === 2">
-            <div class="screen">
-              <div class="content">
+          <!-- 电脑与键盘 -->  
+          <!-- 笔记本电脑 -->
+            <transition name="laptop" appear>
+              <div class="laptop" v-show="page === 3">
+                <div class="content">
+                </div>
+                <div class="btm"></div>
               </div>
-            </div>       
+            </transition>
+          <!-- 笔记本电脑 -->
+          <!-- 手机 -->
+            <transition name="phone" appear>
+              <div class="phone" v-show="page === 3">
+                <div class="screen">
+                  <div class="content">
+                  </div>
+                </div>       
+              </div>
+            </transition>
+          <!-- 手机 -->
           </div>
-        </transition>
-        <!-- 手机 -->
-      </div>
         </div>
       </transition>
-      <!-- 第二页end -->
-
-      <!-- 第二页start -->
-      <transition name="three" appear>
-        <div class="three" v-show="page === 3">
-          
-        </div>
-      </transition>
-      <!-- 第二页end -->
-
+      <!-- 第三页end -->
     </div>
 </template> 
 
@@ -114,7 +137,7 @@ export default {
     let touchStartY = ref(0)
     let touchEndY = ref(0)
     let interval = ref(3000)
-    let distance = ref(50)
+    let distance = ref(20)
     let oneShow = ref(true)
     let page = ref(0)
 
@@ -136,6 +159,10 @@ export default {
       // if (Math.abs(this.touchEndX - this.touchStartX) < this.distance || Math.abs(this.touchEndY - this.touchStartY) > this.distance) {
       //   return 
       // }
+      // 判断是否超过一定滑动距离
+      if (Math.abs(this.touchEndY - this.touchStartY) < this.distance) {
+          return 
+      }
       // 判断滑动的方向
       // const direction = this.touchEndX - this.touchStartX < 0 ? 'right' : 'left'
       const direction2 = this.touchEndY - this.touchStartY < 0 ? 'up' : 'down'
@@ -422,6 +449,35 @@ export default {
   }
 }
 
+
+@keyframes jello-horizontal-out {
+  0% {
+    transform: skew(0deg 0deg);
+  }
+  30% {
+    transform: skew(25deg 25deg);
+  }
+  40% {
+    transform: skew(-15deg, -15deg);
+  }
+  50% {
+    transform: skew(15deg, 15deg);
+    transform: scale3d(00.75, 00.75, 0.75);
+  }
+  65% {
+    transform: skew(-5deg, -5deg);
+    transform: scale3d(0.5, 0.5, 0.5);
+  }
+  75% {
+    transform: skew(5deg, 5deg);
+    transform: scale3d(0.25, 0.25, 0.25);
+  }
+  100% {
+    transform: skew(0deg 0deg);
+    transform: scale3d(0, 0, 0);
+  }
+}
+
 .pencil-enter-active {
   animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both 0.5s;
 }
@@ -437,8 +493,11 @@ export default {
 .one-leave-active {
   animation: text-blur-out .7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
 }
-.two-leave-active {
-  animation: text-blur-out .7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+.sekuai-enter-active {
+  animation: jello-horizontal-out .5s reverse;
+}
+.sekuai-leave-active {
+  animation: jello-horizontal-out .5s both;
 }
 .screen-enter-active {
   animation: jello-horizontal 0.7s both;
@@ -464,7 +523,7 @@ export default {
 
 
 /* 第二页 */
-.two {
+.three {
   display: flex;
   /* height: 100vh; */
   transform: translateY(317px);
@@ -780,5 +839,107 @@ export default {
   left: 0%;
   margin-left: 0px;
 }
+
+/** 胡萝卜 **/
+.twoneirong {
+  margin: 27vh auto;
+  display: flex;
+  /* height: 100vh; */
+}
+.carrot-text {
+  display: flex;
+  padding-right: 17px;
+  align-items: center;
+}
+.Carrot {
+    display: flex;
+    width:150px;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* transform: scale(0.5); */
+  }
+  .Carrot-header {
+    height: 50px;
+    width: 150px;
+    display: flex;
+    transform: translateY(10px);
+  }
+  .carrot-leaf1 {
+    border-radius: 0% 100% 1% 99% / 0% 100% 0% 100%;
+    background-color: forestgreen;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    left: 20%;
+  }
+  .carrot-leaf2 {
+    border-radius: 0% 100% 1% 99% / 0% 100% 0% 100%;
+    transform: rotate(45deg);
+    background-color: forestgreen;
+    width: 50px;
+    height: 50px;
+  }
+  .carrot-leaf3 {
+    border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+    background-color: forestgreen;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    right: 20%;
+  }
+  .Carrot-body {
+    background-color: rgb(243, 129, 57);
+    height: 150px;
+    width: 50px;
+    border-radius: 70% 70% 90% 90%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 17;
+  }
+  .eyes-left {
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    border-radius: 50%;
+    border: 4px white solid;
+    position: relative;
+    top: 21%;
+    margin-right: 5px;
+    animation: blinking  1.7s infinite;
+  }
+  .eyes-right {
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    border-radius: 50%;
+    border: 4px white solid;
+    position: relative;
+    top: 21%;
+    margin-left: 5px;
+    animation: blinking  1.7s infinite;
+  }
+  .mouth {
+    border-radius: 0% 100% 50% 50% / 0% 0% 100% 100% ;
+    background-color: rgb(62, 0, 0);
+    width: 40px;
+    height: 17px;
+  }
+
+  /* 眨眼特效 */
+  @keyframes blinking {
+    0%,
+    40%,
+    60% {
+      clip-path: ellipse(100% 100% at 50% 48%);
+    }
+    75%,
+    90% {
+      clip-path: ellipse(100% 2% at 50% 48%);
+    }
+    100% {
+      clip-path: ellipse(100% 100% at 50% 48%);
+    }
+  }
 
 </style>

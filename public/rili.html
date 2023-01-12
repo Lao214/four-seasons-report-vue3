@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .Carrot {
+    display: flex;
+    width: 300px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .Carrot-header {
+    height: 100px;
+    width: 300px;
+    display: flex;
+    transform: translateY(10px);
+  }
+  .carrot-leaf1 {
+    border-radius: 0% 100% 1% 99% / 0% 100% 0% 100%;
+    background-color: forestgreen;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    left: 20%;
+  }
+  .carrot-leaf2 {
+    border-radius: 0% 100% 1% 99% / 0% 100% 0% 100%;
+    transform: rotate(45deg);
+    background-color: forestgreen;
+    width: 100px;
+    height: 100px;
+  }
+  .carrot-leaf3 {
+    border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+    background-color: forestgreen;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    right: 20%;
+  }
+  .Carrot-body {
+    background-color: rgb(243, 129, 57);
+    height: 300px;
+    width: 100px;
+    border-radius: 70% 70% 90% 90%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 17;
+  }
+  .eyes-left {
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+    border: 7px white solid;
+    position: relative;
+    top: 21%;
+    margin-right: 5px;
+    animation: blinking  1.7s infinite;
+  }
+  .eyes-right {
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+    border: 7px white solid;
+    position: relative;
+    top: 21%;
+    margin-left: 5px;
+    animation: blinking  1.7s infinite;
+  }
+  .mouth {
+    border-radius: 0% 100% 50% 50% / 0% 0% 100% 100% ;
+    background-color: rgb(62, 0, 0);
+    width: 80px;
+    height: 30px;
+  }
+
+  /* 眨眼特效 */
+  @keyframes blinking {
+    0%,
+    40%,
+    60% {
+      clip-path: ellipse(100% 100% at 50% 48%);
+    }
+    75%,
+    90% {
+      clip-path: ellipse(100% 2% at 50% 48%);
+    }
+    100% {
+      clip-path: ellipse(100% 100% at 50% 48%);
+    }
+  }
+
+</style>
+<body>
+  <div class="twobody">
+    <div class="Carrot">
+        <div class="Carrot-header">
+          <div class="carrot-leaf1"></div>
+          <div class="carrot-leaf2"></div>
+          <div class="carrot-leaf3"></div>
+        </div>
+        <div class="Carrot-body">
+          <div class="eyes-left"></div>
+          <div class="eyes-right"></div>
+          <div class="mouth"></div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>
