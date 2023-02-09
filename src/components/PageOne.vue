@@ -7,7 +7,8 @@
       <transition name="sekuai" appear>
         <div class="sekuai"  v-show="page === 1" />
       </transition>
-      <div style="position:absolute;text-align:center;width:100%;bottom: 5%;font-size: 0.7em;" v-show="page <= 2" >上滑屏幕继续</div>
+      <div style="position:absolute;text-align:center;width:100%;bottom: 5%;font-size: 0.7em;" v-show="page <= 5" >上滑屏幕继续</div>
+
       <!-- 第一页start -->
       <transition name="one" appear>
         <div class="one" v-show="page === 1">
@@ -54,7 +55,7 @@
               </transition>
             </div>
             <div class="carrot-text">
-              <p>niasd saasdasd asdasdasdasdas 撒打算大撒打算大时代阿斯顿</p>
+              <p>Niugaoda is not only beautiful</p>
             </div>
           </div>
         </div>
@@ -105,11 +106,50 @@
         </div>
       </transition>
       <!-- 第三页end -->
+
+      <!-- 第四页start -->
+      <transition name="four" appear>
+        <div class="four" v-show="page === 4">
+
+          <transition name="clock" appear>
+            <div v-show="page === 4">
+              <clock />
+              <div style="padding-left: 10%;width: 85%;font-size: 1.2rem;">
+                明月几时有，把酒问青天，不知天上宫阙，今夕是何年。但愿人长久，千里共婵娟
+              </div>
+            </div>
+          </transition>
+
+          <transition name="book" appear>
+            <div v-show="page === 4">
+              <book />
+              <div style="padding-left: 10%;width: 85%;font-size: 1.2rem;">
+                嘴里挑灯看剑，梦回吹角连营。八百里分麾下炙，五十弦翻塞外声，沙场秋点兵
+              </div>
+            </div>
+          </transition>
+        </div>
+      </transition>
+      <!-- 第四页end -->
+
+       <!-- 第五页start -->
+       <transition name="five" appear>
+        <div class="five" v-show="page === 5">
+          <div class="outer">
+            <div class="inter">
+              <el-tree :data="data" :default-expanded-keys="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]" ref="tree"  show-checkbox  node-key="id"  :props="defaultProps"  @check-change="handleCheckChange"></el-tree>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!-- 第五页end -->
     </div>
 </template> 
 
 <script>
 import {ref} from 'vue'
+import clock from './clock.vue'
+import book from './book.vue'
 
 export default {
   props: {
@@ -119,7 +159,8 @@ export default {
     }
   },
   components: {
-
+    clock,
+    book
   },
   watch: {
     showPageOne(newDF, oldDF) {
@@ -140,11 +181,109 @@ export default {
     let distance = ref(20)
     let oneShow = ref(true)
     let page = ref(0)
+    const value = ref()
+    const valueStrictly = ref()
+    const defaultProps = ref({children: 'children',label: 'label'})
+    const tree = ref()
+    const data = [
+  {
+    value: '1',
+    label: 'Level one 1',
+    children: [
+      {
+        value: '1-1',
+        label: 'Level two 1-1',
+        children: [
+          {
+            value: '1-1-1',
+            label: 'Level three 1-1-1',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: '2',
+    label: 'Level one 2',
+    children: [
+      {
+        value: '2-1',
+        label: 'Level two 2-1',
+        children: [
+          {
+            value: '2-1-1',
+            label: 'Level three 2-1-1',
+          },
+        ],
+      },
+      {
+        value: '2-2',
+        label: 'Level two 2-2',
+        children: [
+          {
+            value: '2-2-1',
+            label: 'Level three 2-2-1',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: '3',
+    label: 'Level one 3',
+    children: [
+      {
+        value: '3-1',
+        label: 'Level two 3-1',
+        children: [
+          {
+            value: '3-1-1',
+            label: 'Level three 3-1-1',
+          },
+        ],
+      },
+      {
+        value: '3-2',
+        label: 'Level two 3-2',
+        children: [
+          {
+            value: '3-2-1',
+            label: 'Level three 3-2-1',
+          },
+        ],
+      },
+    ],
+  },
+]
 
     function handleTouchStart(e) {
       this.startTime = Date.now()
       this.touchStartX = e.changedTouches[0].clientX
       this.touchStartY = e.changedTouches[0].clientY
+    }
+
+    function handleCheckChange(data, checked, indeterminate) {
+      // let array = this.tree.value.getCheckedNodes()
+      console.log(data)
+      console.log(checked)
+    }
+
+
+    function sumbitTree() {
+      // this.studyList = ''
+      let array = this.$refs.tree.getCheckedNodes()
+      console.log(array)
+      // for (let i = 0; i < array.length; i++) {
+      //   if(!array[i].children) {
+      //     this.studyList =  this.studyList + ',' + array[i].class + array[i].label
+      //   }
+      // }
+      // const view = {
+      //   comment: this.comment,
+      //   studyList: this.studyList
+      // }
+      // this.$emit('sumbit',view)
+      // console.log('提交我的留言' + this.comment)
     }
 
     function hanldeTouchEnd(e) {
@@ -169,13 +308,16 @@ export default {
       // console.log(direction)
       // console.log(direction2)
 
-      if(direction2 === 'up' && this.page < 3) {
+      if(direction2 === 'up' && this.page < 5) {
         this.page = this.page + 1
       }
       else if(direction2 === 'down' && this.page > 1) {
         this.page = this.page - 1
       }
     }
+
+
+
     return {
       startTime,
       endTime,
@@ -188,7 +330,14 @@ export default {
       handleTouchStart,
       hanldeTouchEnd,
       oneShow,
-      page
+      page,
+      data,
+      value,
+      valueStrictly,
+      defaultProps,
+      handleCheckChange,
+      sumbitTree,
+      tree
     }
   }
 }
@@ -519,6 +668,30 @@ export default {
 
 .phone-leave-active{
   animation: text-blur-out .7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+.book-enter-active{
+  animation: slide-in-right .9s cubic-bezier(.25,.46,.45,.94) both
+}
+
+.book-leave-active{
+  animation: text-blur-out .7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+.clock-enter-active{
+  animation: slide-in-left .9s cubic-bezier(.25,.46,.45,.94) both
+}
+
+.clock-leave-active{
+  animation: text-blur-out .7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+@keyframes slide-in-left{
+  0%{transform:translateX(-1000px);opacity:0}100%{transform:translateX(0);opacity:1}
+}
+@keyframes slide-in-right{
+  0%{transform:translateX(1000px);opacity:0}100%{transform:translateX(0);opacity:1}
+}
+@keyframes slide-out-right{
+  0%{transform:translateX(0);opacity:1}100%{transform:translateX(1000px);opacity:0}
 }
 
 
