@@ -7,7 +7,7 @@
       <transition name="sekuai" appear>
         <div class="sekuai"  v-show="page === 1" />
       </transition>
-      <div style="position:absolute;text-align:center;width:100%;bottom: 5%;font-size: 0.7em;" v-show="page <= 5" >上滑屏幕继续</div>
+      <div style="position:absolute;text-align:center;width:100%;bottom: 5%;font-size: 0.7em;" v-show="page <= 5" >左滑屏幕继续</div>
 
       <!-- 第一页start -->
       <transition name="one" appear>
@@ -132,17 +132,31 @@
       </transition>
       <!-- 第四页end -->
 
-       <!-- 第五页start -->
-       <transition name="five" appear>
+      <!-- 第五页start -->
+      <transition name="five" appear>
         <div class="five" v-show="page === 5">
-          <div class="outer">
-            <div class="inter">
-              <el-tree :data="data" :default-expanded-keys="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]" ref="tree"  show-checkbox  node-key="id"  :props="defaultProps"  @check-change="handleCheckChange"></el-tree>
-            </div>
-          </div>
+          <cards></cards>
+          <button class="btnCard">
+              <span :style="'color: '+'#fff'+';'">提交</span>
+          </button>
         </div>
       </transition>
       <!-- 第五页end -->
+
+      <!-- 第六页start -->
+      <transition name="six" appear>
+        <div class="six" v-show="page === 6">
+          <div :style="'width: '+screenWidth*0.9+'px;margin:'+screenWidth*0.1+'px '+screenWidth*0.05+'px;'">
+            <div class="outer">
+              <div class="inter">
+                  <tree :options="data"></tree>
+              </div>
+            </div>
+          </div>
+          <button class="btnTree">提交</button>
+        </div>
+      </transition>
+      <!-- 第六页end -->
     </div>
 </template> 
 
@@ -150,6 +164,9 @@
 import {ref} from 'vue'
 import clock from './clock.vue'
 import book from './book.vue'
+import tree from './tree.vue'
+import cards from './cards.vue'
+import { getArray } from '../utils/course'
 
 export default {
   props: {
@@ -160,7 +177,9 @@ export default {
   },
   components: {
     clock,
-    book
+    book,
+    tree,
+    cards
   },
   watch: {
     showPageOne(newDF, oldDF) {
@@ -170,6 +189,22 @@ export default {
       }
     }
   },
+  methods: {
+    handleCheckChange(data, checked, indeterminate) {
+      let array = this.$refs.tree.getCheckedNodes()
+      console.log(array)
+    },
+    sumbit() {
+      let studyList = ''
+      let array = this.$refs.tree.getCheckedNodes()
+      for (let i = 0; i < array.length; i++) {
+        if(!array[i].children) {
+          studyList =  studyList + ',' + array[i].class + array[i].label
+        }
+      }
+      console.log('提交我的留言' + this.comment)
+    },
+  },
   setup() {
     let startTime = ref(0)
     let endTime = ref(0)
@@ -177,84 +212,15 @@ export default {
     let touchEndX = ref(0)
     let touchStartY = ref(0)
     let touchEndY = ref(0)
-    let interval = ref(3000)
-    let distance = ref(20)
+    let interval = ref(2000)
+    let distance = ref(30)
     let oneShow = ref(true)
     let page = ref(0)
+    let screenWidth = ref(window.innerWidth)
     const value = ref()
     const valueStrictly = ref()
     const defaultProps = ref({children: 'children',label: 'label'})
-    const tree = ref()
-    const data = [
-  {
-    value: '1',
-    label: 'Level one 1',
-    children: [
-      {
-        value: '1-1',
-        label: 'Level two 1-1',
-        children: [
-          {
-            value: '1-1-1',
-            label: 'Level three 1-1-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: '2',
-    label: 'Level one 2',
-    children: [
-      {
-        value: '2-1',
-        label: 'Level two 2-1',
-        children: [
-          {
-            value: '2-1-1',
-            label: 'Level three 2-1-1',
-          },
-        ],
-      },
-      {
-        value: '2-2',
-        label: 'Level two 2-2',
-        children: [
-          {
-            value: '2-2-1',
-            label: 'Level three 2-2-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: '3',
-    label: 'Level one 3',
-    children: [
-      {
-        value: '3-1',
-        label: 'Level two 3-1',
-        children: [
-          {
-            value: '3-1-1',
-            label: 'Level three 3-1-1',
-          },
-        ],
-      },
-      {
-        value: '3-2',
-        label: 'Level two 3-2',
-        children: [
-          {
-            value: '3-2-1',
-            label: 'Level three 3-2-1',
-          },
-        ],
-      },
-    ],
-  },
-]
+    const data = getArray()
 
     function handleTouchStart(e) {
       this.startTime = Date.now()
@@ -262,61 +228,43 @@ export default {
       this.touchStartY = e.changedTouches[0].clientY
     }
 
-    function handleCheckChange(data, checked, indeterminate) {
-      // let array = this.tree.value.getCheckedNodes()
-      console.log(data)
-      console.log(checked)
-    }
-
-
-    function sumbitTree() {
-      // this.studyList = ''
-      let array = this.$refs.tree.getCheckedNodes()
-      console.log(array)
-      // for (let i = 0; i < array.length; i++) {
-      //   if(!array[i].children) {
-      //     this.studyList =  this.studyList + ',' + array[i].class + array[i].label
-      //   }
-      // }
-      // const view = {
-      //   comment: this.comment,
-      //   studyList: this.studyList
-      // }
-      // this.$emit('sumbit',view)
-      // console.log('提交我的留言' + this.comment)
-    }
-
     function hanldeTouchEnd(e) {
       this.endTime = Date.now()
       this.touchEndX = e.changedTouches[0].clientX
       this.touchEndY = e.changedTouches[0].clientY
       // 判断是否超时
-      // if (this.endTime - this.startTime > this.interval) {
-      //   return
-      // }
+      // console.log(this.endTime - this.startTime)
+      if (this.endTime - this.startTime > this.interval) {
+        return
+      }
+      // 判断是上下滑还是左右滑 上下滑直接return终止
+      if (Math.abs(this.touchEndX - this.touchStartX) < Math.abs(this.touchEndY - this.touchStartY)) {
+        return 
+      }
       // 判断是否超过一定滑动距离
-      // if (Math.abs(this.touchEndX - this.touchStartX) < this.distance || Math.abs(this.touchEndY - this.touchStartY) > this.distance) {
-      //   return 
-      // }
-      // 判断是否超过一定滑动距离
-      if (Math.abs(this.touchEndY - this.touchStartY) < this.distance) {
+      if (Math.abs(this.touchEndX - this.touchStartX) < this.distance) {
           return 
       }
       // 判断滑动的方向
-      // const direction = this.touchEndX - this.touchStartX < 0 ? 'right' : 'left'
-      const direction2 = this.touchEndY - this.touchStartY < 0 ? 'up' : 'down'
+      const direction = this.touchEndX - this.touchStartX < 0 ? 'left' : 'right'
+      // const direction2 = this.touchEndY - this.touchStartY < 0 ? 'up' : 'down'
       // console.log(direction)
       // console.log(direction2)
 
-      if(direction2 === 'up' && this.page < 5) {
+      // if(direction2 === 'up' && this.page < 5) {
+      //   this.page = this.page + 1
+      // }
+      // else if(direction2 === 'down' && this.page > 1) {
+      //   this.page = this.page - 1
+      // }
+
+      if(direction === 'left' && this.page < 6) {
         this.page = this.page + 1
       }
-      else if(direction2 === 'down' && this.page > 1) {
+      else if(direction === 'right' && this.page > 1) {
         this.page = this.page - 1
       }
     }
-
-
 
     return {
       startTime,
@@ -335,9 +283,7 @@ export default {
       value,
       valueStrictly,
       defaultProps,
-      handleCheckChange,
-      sumbitTree,
-      tree
+      screenWidth
     }
   }
 }
@@ -358,6 +304,162 @@ export default {
   top: 0;
   overflow: hidden;
 }
+
+.btnCard {
+ position: relative;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ border-radius: 5px;
+ background: cadetblue;
+ font-family: "Montserrat", sans-serif;
+ box-shadow: 0px 6px 24px 0px rgba(0, 0, 0, 0.294);
+ overflow: hidden;
+ border: none;
+ margin: 0 auto;
+}
+
+.btnCard:after {
+ content: " ";
+ width: 0%;
+ height: 100%;
+ background: #183153;
+ position: absolute;
+ transition: all 0.4s ease-in-out;
+ right: 0;
+}
+
+.btnCard:hover::after {
+ right: auto;
+ left: 0;
+ width: 100%;
+}
+
+.btnCard span {
+ text-align: center;
+ text-decoration: none;
+ width: 100%;
+ padding: 11px 17px;
+ font-size: 1.127em;
+ font-weight: 700;
+ letter-spacing: 0.3em;
+ z-index: 20;
+ transition: all 0.3s ease-in-out;
+}
+
+.btnCard:hover span {
+ color: #e1edff;
+ animation: scaleUp 0.3s ease-in-out;
+}
+
+@keyframes scaleUp {
+ 0% {
+  transform: scale(1);
+ }
+
+ 50% {
+  transform: scale(0.95);
+ }
+
+ 100% {
+  transform: scale(1);
+ }
+}
+
+
+.btnTree {
+  display: inline-block;
+  padding: 12px 24px;
+  border: 1px solid #16a085;
+  border-radius: 4px;
+  transition: all 0.2s ease-in;
+  position: relative;
+  overflow: hidden;
+  font-size: 19px;
+  color: #16a085;
+  background: #34495e00;
+  z-index: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.btnTree:before {
+ content: "";
+ position: absolute;
+ left: 50%;
+ transform: translateX(-50%) scaleY(1) scaleX(1.25);
+ top: 100%;
+ width: 140%;
+ height: 180%;
+ background-color: rgba(0, 0, 0, 0.05);
+ border-radius: 50%;
+ display: block;
+ transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+ z-index: -1;
+}
+
+.btnTree:after {
+ content: "";
+ position: absolute;
+ left: 55%;
+ transform: translateX(-50%) scaleY(1) scaleX(1.45);
+ top: 180%;
+ width: 160%;
+ height: 190%;
+ background-color: #39bda7;
+ border-radius: 50%;
+ display: block;
+ transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+ z-index: -1;
+}
+
+.btnTree:hover {
+ color: #ffffff;
+ border: 1px solid #39bda7;
+}
+
+.btnTree:hover:before {
+ top: -35%;
+ background-color: #39bda7;
+ transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+.btnTree:hover:after {
+ top: -45%;
+ background-color: #39bda7;
+ transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+/* .btnTree {
+  --bg: cadetblue;
+  --text-color: #fff;
+  position: relative;
+  width: 120px;
+  border: none;
+  background: var(--bg);
+  color: var(--text-color);
+  padding: 0.47em;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  transition: 0.2s;
+  border-radius: 5px;
+  opacity: 0.8;
+  letter-spacing: 1px;
+  box-shadow: cadetblue 0px 7px 2px, #000 0px 8px 5px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.btnTree:hover {
+  opacity: 1;
+}
+
+.btnTree:active {
+  box-shadow: cadetblue 0px 3px 2px,#000 0px 3px 5px;
+} */
 
 .sekuai {
   position: absolute;
@@ -1113,6 +1215,17 @@ export default {
     100% {
       clip-path: ellipse(100% 100% at 50% 48%);
     }
+  }
+
+
+  .outer {
+    height: 410px;
+    overflow-y: scroll;
+    border-bottom: #b0d0ca5d 1px solid;
+  }
+  .inter {
+      height: 470px;
+      width: 100%;
   }
 
 </style>
